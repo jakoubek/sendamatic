@@ -2,6 +2,7 @@
 
 [![Mirror on GitHub](https://img.shields.io/badge/mirror-GitHub-blue)](https://github.com/jakoubek/sendamatic)
 [![Go Reference](https://pkg.go.dev/badge/code.beautifulmachines.dev/jakoubek/sendamatic.svg)](https://pkg.go.dev/code.beautifulmachines.dev/jakoubek/sendamatic)
+[![Go Report Card](https://goreportcard.com/badge/code.beautifulmachines.dev/jakoubek/sendamatic)](https://goreportcard.com/report/code.beautifulmachines.dev/jakoubek/sendamatic)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A Go client library for the [Sendamatic](https://www.sendamatic.net) email delivery API.
