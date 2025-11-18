@@ -1,3 +1,17 @@
+// Package sendamatic provides a Go client library for the Sendamatic email delivery API.
+//
+// The library offers a simple and idiomatic Go API with context support, a fluent message
+// builder interface, and comprehensive error handling for sending transactional emails.
+//
+// Example usage:
+//
+//	client := sendamatic.NewClient("your-user-id", "your-password")
+//	msg := sendamatic.NewMessage().
+//		SetSender("sender@example.com").
+//		AddTo("recipient@example.com").
+//		SetSubject("Hello").
+//		SetTextBody("Hello World")
+//	resp, err := client.Send(context.Background(), msg)
 package sendamatic
 
 import (
@@ -11,16 +25,28 @@ import (
 )
 
 const (
+	// defaultBaseURL is the default Sendamatic API endpoint.
 	defaultBaseURL = "https://send.api.sendamatic.net"
+	// defaultTimeout is the default HTTP client timeout for API requests.
 	defaultTimeout = 30 * time.Second
 )
 
+// Client represents a Sendamatic API client that handles authentication and HTTP communication
+// with the Sendamatic email delivery service.
 type Client struct {
 	apiKey     string
 	baseURL    string
 	httpClient *http.Client
 }
 
+// NewClient creates and returns a new Client configured with the provided Sendamatic credentials.
+// The userID and password are combined to form the API key used for authentication.
+// Optional configuration functions can be provided to customize the client behavior.
+//
+// Example:
+//
+//	client := sendamatic.NewClient("user-id", "password",
+//		sendamatic.WithTimeout(60*time.Second))
 func NewClient(userID, password string, opts ...Option) *Client {
 	c := &Client{
 		apiKey:  fmt.Sprintf("%s-%s", userID, password),
@@ -30,7 +56,7 @@ func NewClient(userID, password string, opts ...Option) *Client {
 		},
 	}
 
-	// Optionen anwenden
+	// Apply configuration options
 	for _, opt := range opts {
 		opt(c)
 	}
@@ -38,7 +64,12 @@ func NewClient(userID, password string, opts ...Option) *Client {
 	return c
 }
 
-// Send versendet eine E-Mail über die Sendamatic API
+// Send sends an email message through the Sendamatic API using the provided context.
+// The message is validated before sending. If validation fails or the API request fails,
+// an error is returned. On success, a SendResponse containing per-recipient delivery
+// information is returned.
+//
+// The context can be used to set deadlines, timeouts, or cancel the request.
 func (c *Client) Send(ctx context.Context, msg *Message) (*SendResponse, error) {
 	if err := msg.Validate(); err != nil {
 		return nil, fmt.Errorf("message validation failed: %w", err)
